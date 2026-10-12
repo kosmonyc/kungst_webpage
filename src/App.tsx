@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { api, getToken, setToken, type User } from "./api";
+import UserMenu from "./components/UserMenu";
 import Auth from "./views/Auth";
+import Profile from "./views/Profile";
 import Projects from "./views/Projects";
 import ProjectView from "./views/Project";
+
+type View = { kind: "projects" } | { kind: "project"; id: number } | { kind: "profile" };
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(Boolean(getToken()));
-  const [projectId, setProjectId] = useState<number | null>(null);
+  const [view, setView] = useState<View>({ kind: "projects" });
 
   useEffect(() => {
     if (getToken()) {
@@ -18,34 +22,32 @@ export default function App() {
     return () => window.removeEventListener("kungst:logout", onLogout);
   }, []);
 
+  const home = () => setView({ kind: "projects" });
   const logout = () => {
     setToken(null);
     setUser(null);
-    setProjectId(null);
+    home();
   };
 
   return (
     <>
       <header className="topbar">
-        <button className="brand" onClick={() => setProjectId(null)}>
+        <button className="brand" onClick={home}>
           kungst<span>.</span>
         </button>
-        <span className="faint">zero-shot classification</span>
+        <span className="faint tagline">zero-shot classification</span>
         <div className="spacer" />
-        {user && (
-          <>
-            <span className="faint">{user.email}</span>
-            <button className="btn ghost small" onClick={logout}>Log out</button>
-          </>
-        )}
+        {user && <UserMenu user={user} onProfile={() => setView({ kind: "profile" })} onLogout={logout} />}
       </header>
 
       {checking ? null : !user ? (
         <Auth onAuthenticated={setUser} />
-      ) : projectId === null ? (
-        <Projects onOpen={setProjectId} />
+      ) : view.kind === "profile" ? (
+        <Profile user={user} onUpdated={setUser} onBack={home} onLogout={logout} />
+      ) : view.kind === "project" ? (
+        <ProjectView projectId={view.id} onBack={home} />
       ) : (
-        <ProjectView projectId={projectId} onBack={() => setProjectId(null)} />
+        <Projects onOpen={(id) => setView({ kind: "project", id })} />
       )}
     </>
   );

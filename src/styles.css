@@ -159,6 +159,36 @@ h3 { font-size: 16px; font-weight: 600; margin: 0; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* --- user menu ------------------------------------------------------------ */
+
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border-radius: 50%; font-weight: 700; letter-spacing: -0.02em; color: #fff;
+  background: linear-gradient(135deg, var(--blue-400), var(--navy-600));
+}
+.usermenu { position: relative; }
+.usermenu-trigger {
+  display: flex; align-items: center; gap: 10px;
+  height: 44px; padding: 0 4px 0 16px; border: 0; border-radius: var(--pill);
+  background: var(--navy-800); cursor: pointer; font-weight: 600;
+  transition: background .15s;
+}
+.usermenu-trigger:hover, .usermenu-trigger[aria-expanded="true"] { background: var(--navy-600); }
+.usermenu-trigger .avatar { width: 36px; height: 36px; }
+.menu {
+  position: absolute; right: 0; top: calc(100% + 8px); width: 280px; z-index: 20;
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  padding: 8px; box-shadow: 0 16px 40px rgba(0, 0, 0, .5);
+}
+.menu-head { display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 4px; border-bottom: 1px solid var(--line); }
+.menu-item {
+  display: block; width: 100%; text-align: left; padding: 12px; border: 0; border-radius: 8px;
+  background: none; cursor: pointer; font-weight: 500;
+}
+.menu-item:hover { background: var(--navy-800); }
+.menu-item.danger:hover { color: var(--danger); }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* --- auth hero ------------------------------------------------------------- */
 
 .hero {
@@ -186,6 +216,8 @@ h3 { font-size: 16px; font-weight: 600; margin: 0; }
 .stat { font-size: 48px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
 
 @media (max-width: 860px) {
+  .tagline, .usermenu-name { display: none; }
+  .usermenu-trigger { padding: 0 4px; }
   .hero { grid-template-columns: 1fr; gap: 32px; min-height: 0; }
   .hero-art { display: none; }
   .split { grid-template-columns: 1fr !important; }

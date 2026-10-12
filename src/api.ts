@@ -69,7 +69,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 // --- types ------------------------------------------------------------------ //
 
-export interface User { id: number; email: string; created_at: string }
+export interface User { id: number; email: string; name: string | null; created_at: string }
 export interface Project {
   id: number;
   name: string;
@@ -136,11 +136,12 @@ export interface Evaluation {
 // --- endpoints -------------------------------------------------------------- //
 
 export const api = {
-  register: (email: string, password: string) =>
-    request<User>("POST", "/auth/register", { email, password }),
+  register: (email: string, password: string, name: string | null) =>
+    request<User>("POST", "/auth/register", { email, password, name }),
   login: (email: string, password: string) =>
     request<{ access_token: string }>("POST", "/auth/login", { email, password }),
   me: () => request<User>("GET", "/auth/me"),
+  updateMe: (patch: { name: string | null }) => request<User>("PATCH", "/auth/me", patch),
 
   projects: () => request<Project[]>("GET", "/projects"),
   project: (id: number) => request<Project>("GET", `/projects/${id}`),

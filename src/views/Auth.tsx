@@ -11,6 +11,7 @@ const DEMO = [
 
 export default function Auth({ onAuthenticated }: { onAuthenticated: (u: User) => void }) {
   const [mode, setMode] = useState<"login" | "register">("login");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -21,7 +22,7 @@ export default function Auth({ onAuthenticated }: { onAuthenticated: (u: User) =
     setBusy(true);
     setError(null);
     try {
-      if (mode === "register") await api.register(email, password);
+      if (mode === "register") await api.register(email, password, name.trim() || null);
       const { access_token } = await api.login(email, password);
       setToken(access_token);
       onAuthenticated(await api.me());
@@ -69,6 +70,13 @@ export default function Auth({ onAuthenticated }: { onAuthenticated: (u: User) =
             </button>
           </div>
           <h2>{mode === "login" ? "Welcome back" : "Create your account"}</h2>
+          {mode === "register" && (
+            <label className="field">
+              <span>Name</span>
+              <input className="input" autoComplete="name" maxLength={100}
+                value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+            </label>
+          )}
           <label className="field">
             <span>Email</span>
             <input className="input" type="email" required autoComplete="email"
